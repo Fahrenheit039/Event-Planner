@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--<?language JavaScript?>-->
+
+<?import java.lang.*?>
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.event_planner.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<?import javafx.scene.Group?>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+<!--<Group fx:id="root" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.event_planner.HelloController">-->
+<!--    <Button text="click!" onAction="#onHelloButtonClick" fx:id="btn" />-->
+<!--</Group>-->
+
+<Group fx:id="root" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/fxml/2.2" fx:controller="com.example.event_planner.HelloController">
+    <Button text="Click!" onAction="#onHelloButtonClick" fx:id="btn" prefWidth="60"  />
+</Group>
+
+
+<!--<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"-->
+<!--      fx:controller="com.example.event_planner.HelloController">-->
+<!--    <padding>-->
+<!--        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>-->
+<!--    </padding>-->
+
+<!--    <Label fx:id="welcomeText"/>-->
+<!--    <Button text="Hello!" onAction="#onHelloButtonClick"/>-->
+<!--</VBox>-->
+
