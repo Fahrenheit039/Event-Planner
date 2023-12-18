@@ -6,6 +6,7 @@ import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -111,7 +112,7 @@ public class HelloApplication extends Application {
 //        stage.setWidth();
 
 //        stage.setMinWidth(WIDTH/1.5);
-//        stage.setMinWidth(400);
+        stage.setMinWidth(400);
 
         stage.setMaxWidth(primaryScreenBounds.getWidth());
         stage.setMaxHeight(primaryScreenBounds.getHeight());
@@ -121,6 +122,7 @@ public class HelloApplication extends Application {
 //        if (i >= 1)
         if (s.charAt(i) == '\n') return s.substring(0, i); // [ 0 ; i-1 ]
         else return s;
+        // TODO: 18.12.2023 переписать с regex
 //        return s; //заглушка для хаба
 
 
@@ -184,11 +186,9 @@ public class HelloApplication extends Application {
                         {
                             t = new Text( column.getCellData( i ).toString() );
                             double calcHeight = t.getLayoutBounds().getHeight();
-                            System.out.print(i+" "+t.getLayoutBounds().getHeight()+" \\ ");
+//                            System.out.print(i+" "+t.getLayoutBounds().getHeight()+" \\ ");
 
 //                            System.out.print(i+" "+t.getBoundsInParent().getHeight()+" \\ ");
-
-//                            System.out.print(i+" "+calcHeight+" \\ ");
 
                             //remember new max-width
 //                            if ( calcwidth > max )
@@ -210,37 +210,11 @@ public class HelloApplication extends Application {
 //                            }
                         }
                     }
-                    //set the new max-widht with some extra space
-//        System.out.println("\nsum: "+(sum+10.0d));
-        System.out.print("\nstage: "+(TitleSize + sum+newEmptyLineHeight + lastLineWidth + 4*insetsConst));
-                    stage.setHeight(TitleSize + sum+newEmptyLineHeight + lastLineWidth + 4*insetsConst);
-        System.out.println(" \\ table after stage: "+table.getHeight());
-//                    table.setPrefHeight(sum + 10.0d);
-//                }
-//        );
+        stage.setHeight(TitleSize + sum+newEmptyLineHeight + lastLineWidth + 4*insetsConst);
 
-//        table.getColumns().stream().forEach( (column) ->
-//        {
-//            //Minimal width = columnheader
-//            Text t = new Text( column.getText() );
-//            double max = t.getLayoutBounds().getWidth();
-//            for ( int i = 0; i < table.getItems().size(); i++ )
-//            {
-//                //cell must not be empty
-//                if ( column.getCellData( i ) != null )
-//                {
-//                    t = new Text( column.getCellData( i ).toString() );
-//                    double calcwidth = t.getLayoutBounds().getWidth();
-//                    //remember new max-width
-//                    if ( calcwidth > max )
-//                    {
-//                        max = calcwidth;
-//                    }
-//                }
-//            }
-//            //set the new max-widht with some extra space
-//            column.setPrefWidth( max + 10.0d );
-//        } );
+//        System.out.print("\nstage: "+(TitleSize + sum+newEmptyLineHeight + lastLineWidth + 4*insetsConst));
+//        System.out.println(" \\ table after stage: "+table.getHeight());
+//                    table.setPrefHeight(sum + 10.0d);
     }
     public static void autoResizeColumns1( TableView<?> table ) {
         //Set the right policy
@@ -296,10 +270,14 @@ public class HelloApplication extends Application {
         colText.setCellValueFactory(new PropertyValueFactory<>("text"));
 
         // status
-        TableColumn<dateTableEvents, Boolean> colStatus = new TableColumn<>("Status");
-        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+//        TableColumn<dateTableEvents, Integer> colStatus = new TableColumn<>("Status");
+//        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        table.getColumns().addAll(colId, colText, colStatus);
+//        table.getColumns().addAll(colId, colText, colStatus);
+        table.getColumns().addAll(colId, colText);
+
+        cb1();
+//        addCheckBoxToTable();
 
 //        System.out.println(table.getPrefWidth());
 
@@ -309,6 +287,7 @@ public class HelloApplication extends Application {
 
         addButtonToTable("Edit", "edit");
         addButtonToTable("Delete", "delete");
+
 
 //        autoResizeColumns(table);
 
@@ -394,15 +373,13 @@ public class HelloApplication extends Application {
 //                                    updateData();
                                     break;
                             }
-//                            autoResizeColumns(table);
                             autoResizeColumns1(table);
                             autoResizeTableHeight(table);
                         });
 
                         btn.prefWidthProperty().bind(colBtn.widthProperty().multiply(1));
-//                        colBtn.setPrefWidth(10);//.prefWidthProperty().setValue(10);
-//                        colBtn.prefWidthProperty().;//.prefWidthProperty().setValue(10);
                     }
+
 
                     @Override
                     public void updateItem(Void item, boolean empty) {
@@ -422,6 +399,90 @@ public class HelloApplication extends Application {
 
         table.getColumns().add(colBtn);
     }
+
+//    private void addCheckBoxToTable() {
+//        TableColumn<dateTableEvents, Void> colBtn = new TableColumn("Flag");
+//
+//        Callback<TableColumn<dateTableEvents, Void>, TableCell<dateTableEvents, Void>> cellFactory = new Callback<TableColumn<dateTableEvents, Void>, TableCell<dateTableEvents, Void>>() {
+//            @Override
+//            public TableCell<dateTableEvents, Void> call(final TableColumn<dateTableEvents, Void> param) {
+//                TableCell<dateTableEvents, Void> cell = new TableCell<dateTableEvents, Void>() {
+//
+//                    CheckBox cb = new CheckBox();
+//                    {
+//                        cb.setAllowIndeterminate(true);
+//
+//                        dateTableEvents data = getTableView().getItems().get(getIndex());
+//                        System.out.println("selectedData: " + data);
+////                        dateTableEvents data = param.getValue();
+//
+////                        cb.selectedProperty().addListener((ov, old_val, new_val) -> {
+////
+////
+////                            data.setStatus(new_val);
+////
+////                        });
+//
+//                        cb.setOnAction((ActionEvent event) -> {
+//                            switch(data.getStatus()){
+//                                    case 0: data.setStatus(1); cb.setSelected(true); cb.setAllowIndeterminate(false); break;
+//                                    case 1: data.setStatus(-1); cb.setIndeterminate(true); cb.setSelected(false); break;
+//                                    case -1: data.setStatus(0); cb.setAllowIndeterminate(true); cb.setIndeterminate(true); break;
+//                                }
+////                            cb.setSelected(true);
+//
+//                        });
+//
+//                        cb.prefWidthProperty().bind(colBtn.widthProperty().multiply(1));
+//                    }
+//
+//                    @Override
+//                    public void updateItem(Void item, boolean empty) {
+//                        super.updateItem(item, empty);
+//                        if (empty) {
+//                            setGraphic(null);
+//                        } else {
+//                            setGraphic(cb);
+//                        }
+//                    }
+//                };
+//                return cell;
+//            }
+//        };
+//
+//        colBtn.setCellFactory(cellFactory);
+//
+//        table.getColumns().add(colBtn);
+//    }
+
+// TODO: 18.12.2023 123;
+
+    private void cb1() {
+        TableColumn select = new TableColumn("Flag");
+        select.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<dateTableEvents, CheckBox>, ObservableValue<CheckBox>>() {
+            @Override
+            public ObservableValue<CheckBox> call(TableColumn.CellDataFeatures<dateTableEvents, CheckBox> arg0) {
+                dateTableEvents data = arg0.getValue();
+
+                CheckBox cb = new CheckBox();
+                cb.selectedProperty().setValue(data.getStatus());
+
+                cb.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
+
+                        data.setStatus(new_val);
+                    }
+                });
+//                cb.prefWidthProperty().bind(select.widthProperty().multiply(1));
+
+                return new SimpleObjectProperty<CheckBox>(cb);
+            }
+        });
+        table.getColumns().addAll(select);
+
+    }
+
 
     private void takeAllItems(){
         MultipleSelectionModel<dateTableEvents> someSelectionModel = table.getSelectionModel();

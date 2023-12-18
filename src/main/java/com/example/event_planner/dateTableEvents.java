@@ -45,6 +45,7 @@ public class dateTableEvents{
 //    private Button delete;
     private int index;
     private String text;
+//    private int status;
     private boolean status;
 
     dateTableEvents(int index, String text){
@@ -54,6 +55,7 @@ public class dateTableEvents{
 
         this.index = index;
         this.text = text;
+//        this.status = 0;
         this.status = false;
 
 //        this.edit = new Button("edit");
@@ -61,6 +63,7 @@ public class dateTableEvents{
     }
     dateTableEvents(String text){
         this.text = text;
+//        this.status = 0;
         this.status = false;
     }
 
