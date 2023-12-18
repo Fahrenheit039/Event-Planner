@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe27ab98-d6fc-47dc-973f-d313eb7e57ec" name="Changes" comment="чистка коммов">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/event_planner/ActionButtonTableCell.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/event_planner/dateTableEvents.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/event_planner/refactor1.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="fe27ab98-d6fc-47dc-973f-d313eb7e57ec" name="Changes" comment="regex">
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/event_planner/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/event_planner/HelloApplication.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -71,7 +67,7 @@
       <workItem from="1702462882277" duration="19997000" />
       <workItem from="1702626419386" duration="35467000" />
       <workItem from="1702732196736" duration="24797000" />
-      <workItem from="1702821450079" duration="60644000" />
+      <workItem from="1702821450079" duration="61499000" />
     </task>
     <task id="LOCAL-00001" summary="чистка коммов">
       <created>1702645059479</created>
@@ -80,7 +76,14 @@
       <option name="project" value="LOCAL" />
       <updated>1702645059479</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="regex">
+      <created>1702887263826</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1702887263826</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -99,14 +102,15 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="чистка коммов" />
-    <option name="LAST_COMMIT_MESSAGE" value="чистка коммов" />
+    <MESSAGE value="regex" />
+    <option name="LAST_COMMIT_MESSAGE" value="regex" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/example/event_planner/HelloApplication.java</url>
-          <line>128</line>
+          <line>135</line>
           <option name="timeStamp" value="24" />
         </line-breakpoint>
       </breakpoints>

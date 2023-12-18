@@ -117,19 +117,26 @@ public class HelloApplication extends Application {
         stage.setMaxHeight(primaryScreenBounds.getHeight());
     }
     public String checkString(String s){
-        return s; //заглушка для хаба
+        int i = s.length()-1;
+//        if (i >= 1)
+        if (s.charAt(i) == '\n') return s.substring(0, i); // [ 0 ; i-1 ]
+        else return s;
+//        return s; //заглушка для хаба
+
+
 //        Pattern p = Pattern.compile("\\S\\w*\n");
 
 //        String[] tmp_split = s.split("\\S\\w*\\n+");
 //        String[] tmp_split = s.split("\\S\\\\n+");
 //        String[] tmp_split = s.split("\\n+");
-        String[] tmp_split = s.split(System.lineSeparator());
+
+//        String[] tmp_split = s.split(System.lineSeparator());
 
         // TODO: 18.12.2023 проверяем последнюю строку на "\n", если есть - удаляем '\n'
 
-        if (tmp_split.length == 0) return s;
-        if (tmp_split[tmp_split.length-1].length() == 0) return tmp_split[tmp_split.length-1];
-        else return tmp_split[tmp_split.length-1].substring(0, tmp_split[tmp_split.length-1].length()-1);
+//        if (tmp_split.length == 0) return s;
+//        if (tmp_split[tmp_split.length-1].length() == 0) return tmp_split[tmp_split.length-1];
+//        else return tmp_split[tmp_split.length-1].substring(0, tmp_split[tmp_split.length-1].length()-1);
 
 //        Pattern p = Pattern.compile("\\S\\w*");
 //        Matcher m = p.matcher(s);
