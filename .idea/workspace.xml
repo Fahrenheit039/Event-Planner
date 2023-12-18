@@ -4,20 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe27ab98-d6fc-47dc-973f-d313eb7e57ec" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+    <list default="true" id="fe27ab98-d6fc-47dc-973f-d313eb7e57ec" name="Changes" comment="чистка коммов">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/event_planner/ActionButtonTableCell.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/event_planner/dateTableEvents.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/event_planner/refactor1.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/event_planner/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/event_planner/HelloApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/event_planner/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/event_planner/HelloController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/event_planner/hello-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/event_planner/hello-view.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -36,9 +40,22 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="G:\RE-install_from-7-to-11\asus\Users\fw\Desktop\bfu.pt2\3-1\java\Event Planner\src\main\resources\com\example\event_planner" />
+      <recent name="G:\RE-install_from-7-to-11\asus\Users\fw\Desktop\bfu.pt2\3-1\java\Event Planner\src\main\java\com\example\event_planner" />
+    </key>
+    <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="com.example.event_planner" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -52,8 +69,18 @@
       <workItem from="1702411411324" duration="597000" />
       <workItem from="1702413367708" duration="6541000" />
       <workItem from="1702462882277" duration="19997000" />
-      <workItem from="1702626419386" duration="18395000" />
+      <workItem from="1702626419386" duration="35467000" />
+      <workItem from="1702732196736" duration="24797000" />
+      <workItem from="1702821450079" duration="60644000" />
     </task>
+    <task id="LOCAL-00001" summary="чистка коммов">
+      <created>1702645059479</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1702645059479</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -69,5 +96,33 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="чистка коммов" />
+    <option name="LAST_COMMIT_MESSAGE" value="чистка коммов" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/example/event_planner/HelloApplication.java</url>
+          <line>128</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="events" language="JAVA" />
+        <watch expression="events" language="JAVA" />
+        <watch expression="((com.sun.javafx.collections.VetoableListDecorator)((GridPane)((HelloApplication)this).gridEvents).children).get(4)" custom="com.example.event_planner.HelloApplication,com.sun.javafx.collections.VetoableListDecorator,javafx.scene.layout.GridPane" />
+        <watch expression="this" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Event_Planner$HelloApplication.ic" NAME="HelloApplication Coverage Results" MODIFIED="1702828379255" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>com.example.event_planner.*</FILTER>
+    </SUITE>
   </component>
 </project>

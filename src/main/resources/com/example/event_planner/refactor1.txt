@@ -1,0 +1,446 @@
+package com.example.event_planner;
+
+import javafx.animation.AnimationTimer;
+import javafx.application.Application;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.*;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+
+public class refactor1 {
+}
+
+class tableTest{
+    private SimpleBooleanProperty status;
+    private SimpleStringProperty text;
+
+    tableTest(String text){
+        this.text = new SimpleStringProperty(text);
+        this.status = new SimpleBooleanProperty(false);
+    }
+
+    public String getText(){ return text.get();}
+    public void setText(String value){ text.set(value);}
+
+    public boolean getStatus(){ return status.get();}
+    public void setStatus(boolean value){ status.set(value);}
+}
+
+class Event extends Node {
+    String text;
+    boolean status;
+    public Event(String s){
+        this.text = s;
+        this.status = false;
+    }
+    public void changeText(String s){
+        text = s;
+    }
+}
+
+public class HelloApplication extends Application {
+    private Label time = new Label();
+    private Label dt = new Label();
+    private Label tm = new Label();
+    private Label flags = new Label();
+    private int completed = 0;
+    private int total = 0;
+    private int calendarSwitchFlag = 0;
+    private Label tmp_lbl = new Label();
+    private static final int TitleSize = 34;
+    private static final int firstLineHeight = 50;
+    private static final double lastLineWidth = 35;
+    private static final int insetsConst = 10;
+    private static final int gridOneRowConst = 17;
+
+    GridPane gridEvents;
+    VBox calendarAndEvents;
+    TextArea textArea;
+    Button addNewEvent;
+    HBox addLine;
+
+    //    ObservableList<String> langs = FXCollections.observableArrayList("Java", "JavaScript", "C#", "Python");
+//    ComboBox<String> langsComboBox = new ComboBox<String>(langs);
+//        langsComboBox.setValue("Java"); // устанавливаем выбранный элемент по умолчанию
+    private ArrayList<Event> events = new ArrayList<Event>();
+
+//    BorderPane root; /////////////////////////////////////////////////////// ROOT /////////////////////////////////////////////////////////////
+
+    public static void main(String[] args) {
+        Application.launch(args);
+    }
+    @Override
+    public void start(Stage stage) throws IOException {
+
+        /////////////////////////////////////////////////////////////// 1 /////////////////////////////////////////////////////////////////////
+//        #1
+        ObservableList<String> settings = FXCollections.observableArrayList("0", "Test", "Settings", "About", "Exit");
+        ComboBox<String> settingsComboBox = new ComboBox<String>(settings);
+//        ComboBoxBase<String> settingsComboBox = new ComboBox<String>(settings);
+        settingsComboBox.setPrefSize(25, firstLineHeight);
+        settingsComboBox.setMaxSize(25, firstLineHeight);
+        settingsComboBox.setMinSize(25, firstLineHeight);
+
+//        Label selectedMenuItem = new Label();
+//        ComboBoxBase<String> settingsComboBox_1 = new ComboBox<String>(settings);;
+        settingsComboBox.setOnAction(event -> {
+//            selectedMenuItem.setText(settingsComboBox.getValue());
+            switch(settingsComboBox.getValue()) {
+                case "Test":
+//                    System.out.println(stage.getWidth());
+                    System.out.println("center(calendar+event) "+calendarAndEvents.getHeight()+" \\ stage "+stage.getHeight());
+//                    System.out.println(stage.getHeight());
+//                    System.out.printf("%d %d %f %f insets:%d \nsum = %f\n", TitleSize, firstLineHeight, calendarAndEvents.getHeight(), lastLineWidth, 4*insetsConst,
+//                            TitleSize + firstLineHeight + calendarAndEvents.getHeight() + lastLineWidth + 4*insetsConst);
+                    System.out.printf("sum = %f\n",
+                            TitleSize + firstLineHeight + calendarAndEvents.getHeight() + lastLineWidth + 4*insetsConst);
+//                    events.add(new Event(String.valueOf(stage.getWidth())));
+//                    gridEvents.add(new Label(String.valueOf(events.size())), 0, events.size()); //col, row
+//                    gridEvents.add(new Label(String.valueOf(stage.getWidth())), 1, events.size()); //col, row
+                    break;
+            }
+//            settingsComboBox.valueProperty().set(null);
+//            settingsComboBox.setSelected;
+//            ((ComboBox<String>) settingsComboBox).getSelectionModel().clearSelection();
+//            settingsComboBox.getSelectionModel().clearSelection();
+//            settingsComboBox.getItems().clear();
+//            settingsComboBox.setValue(null);
+//            settingsComboBox.setSelectedIndex(0);
+//            settingsComboBox.valueProperty().set(null);
+            settingsComboBox.setValue("0");
+        });
+
+//        #2
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                LocalDateTime ldt_now = LocalDateTime.now();
+//                time.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss\ndd.MM.yyyy")));
+                tm.setText(ldt_now.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+                dt.setText(ldt_now.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+            }
+        };
+        timer.start();
+
+        DateTimeFormatter formatter1, formatter2;
+        formatter1 = DateTimeFormatter.ofPattern("hh:mm");
+        formatter2 = DateTimeFormatter.ofPattern("dd/MM/yy");
+
+        GridPane gridpane = new GridPane();
+
+        GridPane.setConstraints(tm, 0, 0);
+        GridPane.setConstraints(dt, 0, 1);
+
+        gridpane.getColumnConstraints().add(new ColumnConstraints(firstLineHeight*1.5));
+        RowConstraints row1 = new RowConstraints();
+        row1.setPercentHeight(50);
+        gridpane.getRowConstraints().add(row1);
+        GridPane.setHalignment(tm, HPos.CENTER);
+        GridPane.setValignment(tm, VPos.CENTER);
+
+        RowConstraints row2 = new RowConstraints();
+        row2.setPercentHeight(50);
+        gridpane.getRowConstraints().add(row2);
+        GridPane.setHalignment(dt, HPos.CENTER);
+        GridPane.setValignment(dt, VPos.CENTER);
+
+        gridpane.setGridLinesVisible(true);
+
+        gridpane.add(tm, 0, 0);
+        gridpane.add(dt, 0, 1);
+
+//        #3
+        flags.setText(String.valueOf(completed)+"/"+String.valueOf(total));
+//        CheckBox.setOnAction(event -> { //тут объект нажатия флага CheckBox
+//            flags.setText(String.valueOf(completed)+"/"+String.valueOf(total));
+//        });
+        flags.setMaxHeight(firstLineHeight);
+        flags.setAlignment(Pos.CENTER);
+
+
+//        #4
+        Button calendarSwitch = new Button("Switch\nCalendar");
+        calendarSwitch.setOnAction(e -> {
+            calendarSwitchFlag++;
+            if (calendarSwitchFlag == 3) calendarSwitchFlag = 0;
+            tmp_lbl.setText(String.valueOf(calendarSwitchFlag));
+        });
+
+        calendarSwitch.setMaxHeight(firstLineHeight);
+        calendarSwitch.setTextAlignment(TextAlignment.CENTER);
+
+//        #merger
+        BorderPane stateLine = new BorderPane();
+
+        BorderPane.setAlignment(settingsComboBox, Pos.CENTER);
+        stateLine.setLeft(settingsComboBox);
+
+        HBox time_flag = new HBox(stage.getWidth()*1/10.0, gridpane, flags);
+        time_flag.getSpacing();
+//        setSpacing
+
+        stateLine.setCenter(time_flag);
+        time_flag.setAlignment(Pos.CENTER);
+
+        BorderPane.setAlignment(calendarSwitch, Pos.CENTER);
+        stateLine.setRight(calendarSwitch);
+
+//        stateLine.setStyle("-fx-backround-color: #46dca3");
+//        stateLine.setBackground(new Background(new BackgroundFill(Color.DARKORANGE,null,null)));
+        stateLine.setBackground(new Background(new BackgroundFill(Color.web("0x46DCA3FF", 1.0),null,null)));
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        /////////////////////////////////////////////////////////////// 2 /////////////////////////////////////////////////////////////////////
+        GridPane calendar = new GridPane();
+        switch(calendarSwitchFlag) {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+        }
+
+        tmp_lbl.setText(String.valueOf(calendarSwitchFlag));
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        /////////////////////////////////////////////////////////////// 3 /////////////////////////////////////////////////////////////////////
+        gridEvents = new GridPane();
+
+        gridEvents.getColumnConstraints().add(new ColumnConstraints(20));
+        gridEvents.getColumnConstraints().add(new ColumnConstraints(firstLineHeight*1.5));
+        gridEvents.getRowConstraints().add(new RowConstraints());
+
+//        GridPane.setHgrow(gridEvents, Priority.ALWAYS);
+//        GridPane.setVgrow(gridEvents, Priority.ALWAYS);
+
+//        RowConstraints gridEventsRow2 = new RowConstraints();
+//        gridEventsRow2.setPercentHeight(50);
+//        gridEvents.getRowConstraints().add(gridEventsRow2);
+
+        gridEvents.setGridLinesVisible(true);
+
+//        for (int i=0; i<events.size(); i++) {
+//            gridEvents.add(new Label(String.valueOf(i)), 0, 0); //col, row
+//        for (Event e : events) {
+//            gridEvents.add(new Label(String.valueOf(events.indexOf(e))), 0, 0); //col, row
+//            gridEvents.add(new Label(e.text), 1, 0); //col, row
+//        }
+
+        VBox tmp_vbox = new VBox();
+        HBox tmp_hbox = new HBox(gridEvents, tmp_vbox);
+
+        HBox.setHgrow(tmp_vbox, Priority.ALWAYS);
+        HBox.setHgrow(gridEvents, Priority.ALWAYS);
+
+        tmp_hbox.setFillHeight(true);
+
+//        gridEvents.add(tm, 0, 0);
+//        gridEvents.add(dt, 0, 1);
+
+
+        // создаем список объектов
+        ObservableList<tableTest> tt = FXCollections.observableArrayList(
+
+                new tableTest("Tom"),
+                new tableTest("Bob"),
+                new tableTest("Sam"),
+                new tableTest("Alice")
+        );
+        // определяем таблицу и устанавливаем данные
+        TableView<tableTest> table = new TableView<tableTest>(tt);
+        table.setPrefWidth(250);
+        table.setPrefHeight(200);
+
+        // столбец для вывода имени
+        TableColumn<tableTest, String> nameColumn = new TableColumn<tableTest, String>("Text");
+        // определяем фабрику для столбца с привязкой к свойству name
+        nameColumn.setCellValueFactory(new PropertyValueFactory<tableTest, String>("text"));
+        // добавляем столбец
+        table.getColumns().add(nameColumn);
+
+        // столбец для вывода возраста
+        TableColumn<tableTest, Boolean> ageColumn = new TableColumn<tableTest, Boolean>("Status");
+        ageColumn.setCellValueFactory(new PropertyValueFactory<tableTest, Boolean>("status"));
+        table.getColumns().add(ageColumn);
+
+//        FlowPane root = new FlowPane(10, 10, table);
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//        #merge 2-3
+//        calendarAndEvents = new VBox(calendar, gridEvents);
+        calendarAndEvents = new VBox(calendar, tmp_hbox);
+
+        /////////////////////////////////////////////////////////////// 4 /////////////////////////////////////////////////////////////////////
+//        #1
+        textArea = new TextArea();
+//        textArea.setPrefColumnCount(20);
+//        textArea.setPrefRowCount(2);
+
+//        #2
+        addNewEvent = new Button("+"); //⊕
+
+        addNewEvent.setOnAction(e -> {
+            if (textArea.getText().length() == 0) return;
+
+//            boolean zeroFlag = false;
+//            long count = 0;
+//            if (events.size() == 0) {
+//                zeroFlag = true;
+//                count = Arrays.stream((textArea.getText() + " ").split("\n"))
+//                        .count();
+
+//                System.out.printf("count = %d\n", count);
+//                gridEvents.setPrefHeight(gridEvents.getHeight() + gridOneRowConst*(count));
+//                gridEvents.setMaxHeight(gridEvents.getHeight() + gridOneRowConst*(count));
+//                gridEvents.setMinHeight(gridEvents.getHeight() + gridOneRowConst*(count));
+//                System.out.printf("setHeight = %f\n", calendarAndEvents.getHeight() + gridOneRowConst*(count));
+//            }
+
+            events.add(new Event(textArea.getText()));
+
+//            gridEvents.add(new Label(String.valueOf(events.size())), 0, events.size()); //col, row
+//            gridEvents.add(new Label(textArea.getText()), 1, events.size()); //col, row
+
+            textArea.setText("");
+
+//            System.out.printf("%d %d %f %f insets:%d \n%f", TitleSize, firstLineHeight, gridEvents.getHeight(), lastLineWidth, 4*insetsConst,
+//                    TitleSize + firstLineHeight + gridEvents.getHeight() + lastLineWidth + 4*insetsConst);
+
+//            System.out.printf("tmp_hbox.getHeight() = %f %b\n", tmp_hbox.getHeight(), tmp_hbox.isFillHeight());
+
+//            System.out.println(events);
+            updateGridEvents();
+            updateScreen(stage);
+
+//            System.out.printf("USE_COMPUTED_SIZE = %f\n", gridEvents.USE_COMPUTED_SIZE);
+//            stage.setMinHeight(TitleSize + firstLineHeight + calendarAndEvents.getHeight() + lastLineWidth + 4*insetsConst);
+//            stage.setHeight(TitleSize + firstLineHeight + calendarAndEvents.getHeight() + lastLineWidth + 4*insetsConst);
+//            stage.setMinHeight(TitleSize + tmp_hbox.getHeight() + lastLineWidth);
+//            stage.setHeight(TitleSize + tmp_hbox.getHeight() + lastLineWidth);
+//            if (zeroFlag) {
+//                stage.setMinHeight(stage.getHeight() + gridOneRowConst*(count));
+//                stage.setHeight(stage.getHeight() + gridOneRowConst*(count));
+//            }
+        });
+//        #merger
+//        HBox addLine = new HBox(textArea, addNewEvent);
+        addLine = new HBox(textArea, addNewEvent);
+
+        HBox.setHgrow(textArea, Priority.ALWAYS);
+        HBox.setHgrow(addNewEvent, Priority.ALWAYS);
+
+        textArea.setPrefSize(stage.getWidth()-lastLineWidth, lastLineWidth);
+//        textArea.setPrefHeight(50);
+//        textArea.setPrefWidth(225);
+//        addNewEvent.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        addNewEvent.setPrefSize(lastLineWidth, lastLineWidth);
+
+        HBox.setMargin(addNewEvent, new Insets(insetsConst)); // отступы
+
+        addLine.setBackground(new Background(new BackgroundFill(Color.web("0x46DCA3FF", 1.0),null,null)));
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+//        #merger 1-4
+////        VBox root = new VBox(10, stateLine, calendar, gridEvents, addLine);
+
+        BorderPane root = new BorderPane();
+//        root = new BorderPane();
+
+//        BorderPane.setAlignment(stateLine, Pos.TOP_CENTER);
+//        BorderPane.setAlignment(stateLine, Pos.CENTER);
+//        root.setTop(stateLine);
+
+        root.setCenter(tmp_hbox);
+//        root.setCenter(gridEvents);
+//        BorderPane.setMargin(calendarAndEvents, new Insets(insetsConst)); // отступы
+
+        BorderPane.setAlignment(addLine, Pos.BOTTOM_CENTER);
+//        BorderPane.setAlignment(addLine, Pos.CENTER);
+        root.setBottom(addLine);
+
+//        StackPane pre_root = new StackPane(calendarAndEvents, addLine, stateLine);
+//        VBox root = new VBox(stateLine, calendarAndEvents, addLine);
+
+//        AnchorPane root = new AnchorPane(stateLine, calendarAndEvents, addLine);
+//        AnchorPane.setTopAnchor(stateLine, 0.0);
+//        AnchorPane.setBottomAnchor(addLine, 0.0);
+
+//        StackPane.setAlignment(stateLine, Pos.TOP_CENTER);
+//
+//        StackPane.setAlignment(calendarAndEvents, Pos.CENTER);
+//        StackPane.setMargin(calendarAndEvents, new Insets(insetsConst)); // отступы
+//
+//        StackPane.setAlignment(addLine, Pos.BOTTOM_CENTER);
+//        root.setBottom(addLine);
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        ///////////////////////////////////////////////////////////// scene ///////////////////////////////////////////////////////////////////
+
+        Scene scene = new Scene(root);
+
+        stage.setMinWidth(300);
+//        stage.setMaxWidth(300);
+        stage.setWidth(300);
+
+//        stage.setMaxHeight(TitleSize + firstLineHeight + gridEvents.getHeight() + lastLineWidth + 4*insetsConst);
+//        stage.setMinHeight(TitleSize + firstLineHeight + tmp_hbox.getHeight() + lastLineWidth + 4*insetsConst);
+//        stage.setHeight(TitleSize + firstLineHeight + tmp_hbox.getHeight() + lastLineWidth + 4*insetsConst);
+//        stage.setMinHeight(TitleSize + tmp_hbox.getHeight() + lastLineWidth);
+//        stage.setHeight(TitleSize + tmp_hbox.getHeight() + lastLineWidth);
+
+        stage.setScene(scene);
+        stage.setTitle("Event Planner");
+        stage.show();
+
+    }
+
+    //    private void printEvents(){
+    private void updateScreen(Stage stage){
+
+
+        BorderPane root = new BorderPane();
+        root.setCenter(gridEvents);
+        BorderPane.setAlignment(addLine, Pos.CENTER);
+        root.setBottom(addLine);
+
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Event Planner");
+        stage.show();
+    }
+
+    private void updateGridEvents(){
+        gridEvents = new GridPane();
+        gridEvents.getColumnConstraints().add(new ColumnConstraints(20));
+        gridEvents.getColumnConstraints().add(new ColumnConstraints(firstLineHeight*1.5));
+        gridEvents.getRowConstraints().add(new RowConstraints());
+        gridEvents.setGridLinesVisible(true);
+
+        for (Event e : events) {
+            gridEvents.add(new Label(String.valueOf(events.indexOf(e))), 0, 0); //col, row
+            gridEvents.add(new Label(e.text), 1, 0); //col, row
+        }
+    }
+}
