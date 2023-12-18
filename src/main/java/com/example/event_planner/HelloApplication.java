@@ -1,12 +1,7 @@
 package com.example.event_planner;
 
-import eu.hansolo.toolboxfx.geom.Dimension;
-import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,15 +9,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.*;
-import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.ColorInput;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -32,16 +23,11 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import javafx.util.Duration;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 //import java.awt.Toolkit;
 
@@ -61,9 +47,9 @@ public class HelloApplication extends Application {
     private Label time = new Label();
     private Label dt = new Label();
     private Label tm = new Label();
-    private Label flags = new Label();
-    private int completed = 0;
-    private int total = 0;
+    private static Label flags = new Label();
+    private static int completed = 0;
+    private static int total = 0;
     private int calendarSwitchFlag = 0;
     private Label tmp_lbl = new Label();
     private static final int TitleSize = 34;
@@ -72,6 +58,8 @@ public class HelloApplication extends Application {
     private static final int insetsConst = 10;
     private static final int gridOneRowConst = 17;
 
+    BorderPane stateLine;
+    static HBox time_flag;
     GridPane gridEvents;
     VBox calendarAndEvents;
     TextArea textArea;
@@ -157,6 +145,8 @@ public class HelloApplication extends Application {
         data.add(new dateTableEvents(data.size(), checkString(textArea.getText())));
         table.setItems(data);
 
+        total++;
+
         autoResizeColumns1(table);
         autoResizeTableHeight(table);
 
@@ -171,7 +161,8 @@ public class HelloApplication extends Application {
 //                {
                TableColumn column = table.getColumns().get(1);
                     Text t = new Text( column.getText() );
-                    double sum = (t.getLayoutBounds().getHeight() *1.8235); //+ 9.1d;
+                    double sum = firstLineHeight;
+                    sum += (t.getLayoutBounds().getHeight() *1.8235); //+ 9.1d;
 //        t.getLayoutBounds().
 //                    double sum = 21.75;
                     double newEmptyLineHeight = 25; //25
@@ -216,7 +207,7 @@ public class HelloApplication extends Application {
 //        System.out.println(" \\ table after stage: "+table.getHeight());
 //                    table.setPrefHeight(sum + 10.0d);
     }
-    public static void autoResizeColumns1( TableView<?> table ) {
+    public void autoResizeColumns1( TableView<?> table ) {
         //Set the right policy
         table.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
 
@@ -236,8 +227,12 @@ public class HelloApplication extends Application {
 //        table.getColumns().get(3).setPrefWidth(table.getWidth()*15/100);
 //        table.getColumns().get(4).setPrefWidth(table.getWidth()*15/100);
 
+        table.getColumns().get(1).setPrefWidth(table.getWidth() - minus);
+//        System.out.println("shapka: "+ table.getWidth()/4);
+        time_flag.setSpacing(table.getWidth()/4);
+        updateFlags();
     }
-    public static void autoResizeColumns1( TableView<?> table , double stageWidth) {
+    public void autoResizeColumns1(TableView<?> table, double stageWidth) {
         //Set the right policy
         table.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
 
@@ -256,6 +251,8 @@ public class HelloApplication extends Application {
 //        table.getColumns().get(2).setPrefWidth(table.getWidth()*15/100);
 //        table.getColumns().get(3).setPrefWidth(table.getWidth()*15/100);
 //        table.getColumns().get(4).setPrefWidth(table.getWidth()*15/100);
+        time_flag.setSpacing(stageWidth/3);
+        updateFlags();
 
     }
     private void tableUpdate(){
@@ -325,10 +322,13 @@ public class HelloApplication extends Application {
                         btn.setOnAction((ActionEvent event) -> {
 
                             dateTableEvents data = getTableView().getItems().get(getIndex());
-                            System.out.println("selectedData: " + data);
+//                            System.out.println("selectedData: " + data);
 
                             switch(action){
                                 case "edit":
+                                    if (data.getStatus()) completed--;
+                                    flags.setText(String.valueOf(completed)+" / "+String.valueOf(total));
+
                                     Stage stage = new Stage();
                                     stage.setWidth(400);
 
@@ -364,6 +364,10 @@ public class HelloApplication extends Application {
                                     break;
 
                                 case "delete":
+                                    if (data.getStatus()) completed--;
+                                    total--;
+                                    flags.setText(String.valueOf(completed)+" / "+String.valueOf(total));
+
                                     table.getItems().remove(data);
                                     int i = data.getIndex();
                                     for (dateTableEvents d : getTableView().getItems()) {
@@ -457,6 +461,17 @@ public class HelloApplication extends Application {
 
 // TODO: 18.12.2023 123;
 
+    private void updateFlags(){
+        completed = 0;
+        total = 0;
+        for (dateTableEvents item : table.getItems())
+        {
+            if (item.getStatus()) completed++;
+            total++;
+        }
+        flags.setText(String.valueOf(completed)+" / "+String.valueOf(total));
+    }
+
     private void cb1() {
         TableColumn select = new TableColumn("Flag");
         select.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<dateTableEvents, CheckBox>, ObservableValue<CheckBox>>() {
@@ -470,8 +485,10 @@ public class HelloApplication extends Application {
                 cb.selectedProperty().addListener(new ChangeListener<Boolean>() {
                     @Override
                     public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
-
                         data.setStatus(new_val);
+//                        if (new_val) colored(data.getIndex());
+
+                        updateFlags();
                     }
                 });
 //                cb.prefWidthProperty().bind(select.widthProperty().multiply(1));
@@ -483,6 +500,134 @@ public class HelloApplication extends Application {
 
     }
 
+    private void colored(int index){
+
+//        private void customiseFactory(TableColumn<dateTableEvents, String> calltypel) {
+//            calltypel.setCellFactory(column -> {
+//                return new TableCell<dateTableEvents, String>() {
+//                    @Override
+//                    protected void updateItem(String item, boolean empty) {
+//                        super.updateItem(item, empty);
+//
+//                        setText(empty ? "" : getItem().toString());
+//                        setGraphic(null);
+//
+//                        TableRow<CallLogs> currentRow = getTableRow();
+//
+//                        if (!isEmpty()) {
+//
+//                            if(item.equals("a"))
+//                                currentRow.setStyle("-fx-background-color:lightcoral");
+//                            else
+//                                currentRow.setStyle("-fx-background-color:lightgreen");
+//                        }
+//                    }
+//                };
+//            });
+//        }
+
+        // TODO: 18.12.2023 4
+
+
+//        TableColumn<dateTableEvents, String> nameColumn = table.getColumns().get(0);
+//        nameColumn.setCellFactory(column -> {
+//            return new TableCell<dateTableEvents, String>() {
+//                @Override
+//                protected void updateItem(String item, boolean empty) {
+//                    super.updateItem(item, empty); //This is mandatory
+//                    if (item == null || empty) { //If the cell is empty
+//                        setText(null);
+//                        setStyle("");
+//                    } else { //If the cell is not empty
+//                        setText(item); //Put the String data in the cell
+//                        dateTableEvents date = getTableView().getItems().get(getIndex());
+//
+//                        // Style all persons wich name is "Edgard"
+//                        if (date.getIndex() == index) {
+//                            setTextFill(Color.RED); //The text in red
+//                            setStyle("-fx-background-color: yellow"); //The background of the cell in yellow
+//                        } else {
+//                            //Here I see if the row of this cell is selected or not
+//                            if (getTableView().getSelectionModel().getSelectedItems().contains(date))
+//                                setTextFill(Color.WHITE);
+//                            else
+//                                setTextFill(Color.BLACK);
+//                        }
+//                    }
+//                }
+//            };
+//        });
+        // TODO: 18.12.2023 3
+
+        table.setRowFactory(tv -> new TableRow<dateTableEvents>() {
+            @Override
+            protected void updateItem(dateTableEvents item, boolean empty) {
+                super.updateItem(item, empty);
+                if(item == null || item.getText().equals(""))
+                    setStyle("");
+                else {
+                        setStyle("-fx-background-color: #ffd7d1;");
+                }
+//                ((Labeled) getChildren().get(index)).setStyle("-fx-background-color: yellow");
+//                ((Labeled) getChildren().get(index+1)).setStyle("-fx-background-color: yellow");
+//                if (item == null || item.getText().equals(""))
+//                    setStyle("");
+//                else {
+//                    ((Labeled) getChildren().get(index)).setStyle("-fx-background-color: yellow");
+//                    if (item.getText().length() > 5)
+//                        setStyle("-fx-border-color: #baffba;");
+//                        setStyle("-fx-background-color: #baffba;");
+//                        setStyle("-fx-progress-color: #baffba;");
+//                    else
+//                        if (item.getText().length() < 5)
+//                        setStyle("-fx-background-color: #ffd7d1;");
+
+//                }
+            }
+        });
+
+// TODO: 18.12.2023 2
+
+//      data.setBackground(new Background(new BackgroundFill(Color.web("0x46DCA3FF", 1.0), null, null)));
+//        table.setRowFactory((TableView row) -> {
+//            return new TableRow() {
+//                public void updateItem(dateTableEvents item, boolean empty) {
+//                    // Сначала обязательно сбрасываем стиль.
+//                    setStyle("");
+//                    // и только после этого вызываем метод super.updateItem
+//                    super.updateItem(item, empty);
+//                    if (item == null || empty) {
+//                        setStyle("");
+//                    } else {
+//                        for (dateTableEvents col : table.getItems().get(data.getIndex())) {
+//                            Long zakazIndex = dateTableEvents.;
+//                            Long pIndex = item.getIndex();
+//                            if (Objects.equals(zakazIndex, pIndex)) {
+//                                setStyle("-fx-background-color:lightgreen");
+//                            }
+//                        }
+//                    }
+//                }
+//            };
+//        });
+
+// TODO: 18.12.2023 1
+
+//        table.getColumns().forEach( (column) -> {
+//            Text t = new Text( column.getText() );
+//
+////            for ( int i = 0; i < table.getItems().size(); i++ ) {
+//                if ( column.getCellData( index ) != null ) {
+//                    table.getRowFactory().
+////                    if (Objects.equals(index, column)) {
+////                        setStyle("-fx-background-color:lightgreen");
+////                    }
+//                }
+//
+////            .setBackground(new Background(new BackgroundFill(Color.web("0x46DCA3FF", 1.0), null, null)));
+//        } );
+
+    }
 
     private void takeAllItems(){
         MultipleSelectionModel<dateTableEvents> someSelectionModel = table.getSelectionModel();
@@ -572,6 +717,181 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
+
+        /////////////////////////////////////////////////////////////// 1 /////////////////////////////////////////////////////////////////////
+//        #1
+        ObservableList<String> settings = FXCollections.observableArrayList("0", "Test", "Settings", "About", "Exit");
+        ComboBox<String> settingsComboBox = new ComboBox<String>(settings);
+        settingsComboBox.setPrefSize(25, firstLineHeight);
+        settingsComboBox.setMaxSize(25, firstLineHeight);
+        settingsComboBox.setMinSize(25, firstLineHeight);
+
+        settingsComboBox.setOnAction(event -> {
+            switch(settingsComboBox.getValue()) {
+                case "Test":
+//                    System.out.println(stage.getWidth());
+                    System.out.println("center(calendar+event) "+calendarAndEvents.getHeight()+" \\ stage "+stage.getHeight());
+//                    System.out.println(stage.getHeight());
+//                    System.out.printf("%d %d %f %f insets:%d \nsum = %f\n", TitleSize, firstLineHeight, calendarAndEvents.getHeight(), lastLineWidth, 4*insetsConst,
+//                            TitleSize + firstLineHeight + calendarAndEvents.getHeight() + lastLineWidth + 4*insetsConst);
+                    System.out.printf("sum = %f\n",
+                            TitleSize + firstLineHeight + calendarAndEvents.getHeight() + lastLineWidth + 4*insetsConst);
+//                    events.add(new Event(String.valueOf(stage.getWidth())));
+//                    gridEvents.add(new Label(String.valueOf(events.size())), 0, events.size()); //col, row
+//                    gridEvents.add(new Label(String.valueOf(stage.getWidth())), 1, events.size()); //col, row
+                    break;
+                case "Settings":
+                    break;
+                case "About":
+                    Stage stage11 = new Stage();
+                    stage11.setHeight(150);
+                    stage11.setWidth(225);
+
+                    Label lbl11 = new Label("made for Java-23-2");
+                    Label lbl12 = new Label("by Alexander Tatarinov");
+                    Button btn11 = new Button("Cool!"); //⊕
+                    btn11.setOnAction(e -> {
+                        stage11.close();
+                    });
+
+                    VBox about = new VBox(10, lbl11, lbl12, btn11);
+//                    VBox.setVgrow(lbl11, Priority.ALWAYS);
+//                    VBox.setVgrow(btn11, Priority.ALWAYS);
+
+//                    lbl11.setAlignment(Pos.CENTER);
+                    about.setAlignment(Pos.CENTER);
+
+//                    lbl11.setPrefSize(stage11.getWidth()-lastLineWidth*5/2, lastLineWidth);
+//                    addNewEvent.setPrefSize(lastLineWidth*5/2, lastLineWidth);
+//                    System.out.println("all:"+stage.getWidth()+" \\ textArea: "+textArea.getWidth()+" \\ btn: "+addNewEvent.getWidth());
+
+                    VBox.setMargin(about, new Insets(insetsConst)); // отступы. кнопка в своем квадрате
+
+                    about.setBackground(new Background(new BackgroundFill(Color.web("0x46DCA3FF", 1.0),null,null)));
+
+                    BorderPane root11 = new BorderPane();
+                    root11.setCenter(about);
+
+                    Scene scene11 = new Scene(root11);
+                    stage11.setTitle("About");
+                    stage11.setScene(scene11);
+                    stage11.initModality(Modality.APPLICATION_MODAL);
+                    stage11.showAndWait();
+                    break;
+                case "Exit":
+                    System.exit(0);
+                    break;
+            }
+//            settingsComboBox.valueProperty().set(null);
+//            settingsComboBox.setSelected;
+//            ((ComboBox<String>) settingsComboBox).getSelectionModel().clearSelection();
+//            settingsComboBox.getSelectionModel().clearSelection();
+//            settingsComboBox.getItems().clear();
+//            settingsComboBox.setValue(null);
+//            settingsComboBox.setSelectedIndex(0);
+//            settingsComboBox.valueProperty().set(null);
+            settingsComboBox.setValue("0");
+        });
+
+//        #2
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                LocalDateTime ldt_now = LocalDateTime.now();
+//                time.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss\ndd.MM.yyyy")));
+                tm.setText(ldt_now.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+                dt.setText(ldt_now.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+            }
+        };
+        timer.start();
+
+        DateTimeFormatter formatter1, formatter2;
+        formatter1 = DateTimeFormatter.ofPattern("hh:mm");
+        formatter2 = DateTimeFormatter.ofPattern("dd/MM/yy");
+
+        GridPane gridpane = new GridPane();
+
+        GridPane.setConstraints(tm, 0, 0);
+        GridPane.setConstraints(dt, 0, 1);
+
+        gridpane.getColumnConstraints().add(new ColumnConstraints(firstLineHeight*1.5));
+        RowConstraints row1 = new RowConstraints();
+        row1.setPercentHeight(50);
+        gridpane.getRowConstraints().add(row1);
+        GridPane.setHalignment(tm, HPos.CENTER);
+        GridPane.setValignment(tm, VPos.CENTER);
+
+        RowConstraints row2 = new RowConstraints();
+        row2.setPercentHeight(50);
+        gridpane.getRowConstraints().add(row2);
+        GridPane.setHalignment(dt, HPos.CENTER);
+        GridPane.setValignment(dt, VPos.CENTER);
+
+//        gridpane.setGridLinesVisible(true);
+
+        gridpane.add(tm, 0, 0);
+        gridpane.add(dt, 0, 1);
+
+//        #3
+//        flags.setText(String.valueOf(completed)+"/"+String.valueOf(total)); // TODO: 18.12.2023 flaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaags
+//        CheckBox.setOnAction(event -> { //тут объект нажатия флага CheckBox
+//            flags.setText(String.valueOf(completed)+"/"+String.valueOf(total));
+//        });
+        flags.setMaxHeight(firstLineHeight);
+        flags.setAlignment(Pos.CENTER);
+
+
+//        #4
+        Button calendarSwitch = new Button("Switch\nCalendar");
+        calendarSwitch.setOnAction(e -> {
+            calendarSwitchFlag++;
+            if (calendarSwitchFlag == 3) calendarSwitchFlag = 0;
+            tmp_lbl.setText(String.valueOf(calendarSwitchFlag));
+        });
+
+        calendarSwitch.setMaxHeight(firstLineHeight);
+        calendarSwitch.setTextAlignment(TextAlignment.CENTER);
+
+//        #merger
+//        BorderPane stateLine = new BorderPane();
+        stateLine = new BorderPane();
+
+        BorderPane.setAlignment(settingsComboBox, Pos.CENTER);
+        stateLine.setLeft(settingsComboBox);
+
+//        HBox time_flag = new HBox(gridpane, flags);
+        time_flag = new HBox(gridpane, flags);
+//        System.out.println("shapka: " + table.getWidth());
+        time_flag.setSpacing(25);
+
+        stateLine.setCenter(time_flag);
+        time_flag.setAlignment(Pos.CENTER);
+
+        BorderPane.setAlignment(calendarSwitch, Pos.CENTER);
+        stateLine.setRight(calendarSwitch);
+
+//        stateLine.setStyle("-fx-backround-color: #46dca3");
+//        stateLine.setBackground(new Background(new BackgroundFill(Color.DARKORANGE,null,null)));
+        stateLine.setBackground(new Background(new BackgroundFill(Color.web("0x46DCA3FF", 1.0),null,null)));
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        /////////////////////////////////////////////////////////////// 2 /////////////////////////////////////////////////////////////////////
+        GridPane calendar = new GridPane();
+        switch(calendarSwitchFlag) {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+        }
+
+//        tmp_lbl.setText(String.valueOf(calendarSwitchFlag));
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
         /////////////////////////////////////////////////////////////// 3 /////////////////////////////////////////////////////////////////////
         setTableAppearance();
         fillTableObservableListWithSampleData();
@@ -601,7 +921,7 @@ public class HelloApplication extends Application {
 //                tmp += line;
 //            }
 //            System.out.println(tmp);
-                if (event.getCode() == KeyCode.ENTER) {
+            if (event.getCode() == KeyCode.ENTER) {
 //                    event.consume(); // otherwise a new line will be added to the textArea after the sendFunction() call
 //                if (ENTER.match(event)){
 //                    addNewEvent();
@@ -612,17 +932,17 @@ public class HelloApplication extends Application {
 //                    textArea.setText(textArea.getText()+"\n");
 //                    textArea.insertText(textArea.getCaretPosition(), "\n");
 //                }
-                    if (event.isShiftDown()) {
-                        textArea.appendText(System.getProperty("line.separator"));
+                if (event.isShiftDown()) {
+                    textArea.appendText(System.getProperty("line.separator"));
 //
 //                        textArea.deleteText(textArea.getSelection());
 //                        textArea.insertText(textArea.getCaretPosition(), "\n");
-                    } else {
-                        if (!textArea.getText().trim().isEmpty()) {
-                            addNewEvent();
-                        }
+                } else {
+                    if (!textArea.getText().trim().isEmpty()) {
+                        addNewEvent();
                     }
-//                event.consume(); // otherwise a new line will be added to the textArea after the sendFunction() call
+                }
+//                event.consume(); // otherwise a new line will be added to the textArea after the sendFunction() call;
             }
 
         });
@@ -648,8 +968,8 @@ public class HelloApplication extends Application {
 //        root = new BorderPane();
 
 //        BorderPane.setAlignment(stateLine, Pos.TOP_CENTER);
-//        BorderPane.setAlignment(stateLine, Pos.CENTER);
-//        root.setTop(stateLine);
+        BorderPane.setAlignment(stateLine, Pos.CENTER);
+        root.setTop(stateLine);
 
         root.setCenter(table);
         BorderPane.setMargin(table, new Insets(insetsConst)); // отступы
